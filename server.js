@@ -7,11 +7,13 @@ const { open } = require("sqlite");
 const path = require("path");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cors = require("cors");
 
 const dbPath = path.join(__dirname, "database.db");
 const port = process.env.PORT || 4000;
 
 app.use(express.json());
+app.use(cors());
 let db = null;
 
 initializeDbAndServer = async () => {
@@ -57,6 +59,7 @@ app.post("/users/", async (request, response) => {
   const { username, password, email } = request.body;
   const hashedPassword = await bcrypt.hash(password, 10);
   const getUserDetails = `SELECT * FROM users WHERE username = '${username}'`;
+  console.log(getUserDetails);
   const dbUser = await db.get(getUserDetails);
   if (dbUser === undefined) {
     // create user in users table
