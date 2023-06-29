@@ -59,7 +59,6 @@ app.post("/users/", async (request, response) => {
   const { username, password, email } = request.body;
   const hashedPassword = await bcrypt.hash(password, 10);
   const getUserDetails = `SELECT * FROM users WHERE username = '${username}'`;
-  console.log(getUserDetails);
   const dbUser = await db.get(getUserDetails);
   if (dbUser === undefined) {
     // create user in users table
@@ -82,6 +81,7 @@ app.post("/login/", async (request, response) => {
   const { username, password } = request.body;
   const getUserQuery = `SELECT * FROM users where username = '${username}'`;
   const dbUser = await db.get(getUserQuery);
+  console.log(dbUser);
   if (dbUser === undefined) {
     response.status(400);
     response.send("Invalid User");
@@ -100,16 +100,4 @@ app.post("/login/", async (request, response) => {
       response.send("Invalid Password");
     }
   }
-});
-
-app.get("/books/", authenticateToken, async (request, response) => {
-  response.send("book Details");
-});
-
-app.get("/books/:bookId", authenticateToken, async (request, response) => {
-  const { bookId } = request.params;
-  const { username } = request;
-  const getUserDetails = `SELECT * FROM users where username = '${username}'`;
-  const dbUser = await db.get(getUserDetails);
-  response.send(dbUser);
 });
